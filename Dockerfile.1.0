@@ -1,0 +1,30 @@
+FROM python:3.8.13
+
+# Set working directory
+WORKDIR /app
+
+# Install OS dependencies
+RUN apt-get update && apt-get install -qq -y \
+    git gcc build-essential libpq-dev --fix-missing --no-install-recommends \ 
+    && apt-get clean
+
+# Make sure we are using latest pip
+RUN pip install --upgrade pip
+
+# Create directory for dbt config
+RUN mkdir -p /root/.dbt
+
+# Install dbt
+RUN pip install dbt-core==1.0.8 dbt-postgres==1.0.8 dbt-rpc==0.1.2
+
+# Copy dbt profile
+COPY profiles.yml /root/.dbt/profiles.yml
+
+# Start the dbt RPC server
+# CMD ["dbt-rpc", "serve"]
+
+# Run our container with 1 cpu
+# docker run --name dbt_app --rm --cpus 1 -p 8580:8580 -v "/$(pwd)/01_2000_simple_models:/app" -it dbt-app dbt-rpc serve
+# docker run -d -t --name dbt_app --rm --cpus 1 -p 8580:8580 -v "/$(pwd)/01_2000_simple_models:/app" dbt-app
+# docker exec -it dbt_app dbt compile
+# docker exec -it dbt_app dbt --no-partial-parse build -s node_0
