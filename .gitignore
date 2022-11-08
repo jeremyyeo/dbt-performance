@@ -6,3 +6,4 @@ dbt_modules/
 
 # Python
 venv*
+**/*.ipynb_checkpoints/

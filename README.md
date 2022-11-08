@@ -27,7 +27,7 @@ I used dbt-core's setup [here](https://github.com/dbt-labs/dbt-core/blob/main/CO
 
 4. Run our notebook.
 
-See [stats.ipynb](stats.ipynb).
+Run `jupyter-lab` and open [stats.ipynb](stats.ipynb).
 
 ### Note
 
