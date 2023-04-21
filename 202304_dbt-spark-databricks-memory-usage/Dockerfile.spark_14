@@ -1,0 +1,27 @@
+FROM python:3.9.16
+
+WORKDIR /app
+
+RUN apt-get update -y && \
+    apt-get install -y \
+    g++ \
+    unixodbc-dev \
+    libsasl2-modules-gssapi-mit \
+    unzip
+
+RUN curl https://databricks-bi-artifacts.s3.us-east-2.amazonaws.com/simbaspark-drivers/odbc/2.6.29/SimbaSparkODBC-2.6.29.1049-Debian-64bit.zip -L -o /tmp/simba_odbc.zip \
+    && unzip /tmp/simba_odbc.zip -d /tmp/ \
+    && dpkg -i /tmp/simbaspark_2.6.29.1049-2_amd64.deb \
+    && echo "[Simba]\nDriver = /opt/simba/spark/lib/64/libsparkodbc_sb64.so" >> /etc/odbcinst.ini
+
+RUN pip install --upgrade pip \
+    && pip install dbt-spark[ODBC]~=1.4.0 \
+    && pip install memory_profiler
+
+RUN mkdir -p /root/.dbt
+COPY dbt/profiles.yml /root/.dbt/profiles.yml
+
+ENV DBT_TARGET_NAME=spark
+
+# docker run --env-file .env --rm -it -v "/$(pwd)/dbt:/app" dbt_spark_14 dbt debug
+# docker run --env-file .env --rm -it -v "/$(pwd)/dbt:/app" dbt_spark_14 dbt run

@@ -1,0 +1,23 @@
+FROM python:3.9.16
+
+WORKDIR /app
+
+RUN apt-get update -y && \
+    apt-get install -y \
+    g++ \
+    unixodbc-dev \
+    libsasl2-modules-gssapi-mit \
+    unzip
+
+RUN pip install --upgrade pip \
+    && pip install dbt-databricks~=1.3.0 \
+    && pip install memory_profiler
+
+RUN mkdir -p /root/.dbt
+COPY dbt/profiles.yml /root/.dbt/profiles.yml
+
+ENV DBT_TARGET_NAME=databricks
+
+# docker build -t dbt_databricks_13 . -f Dockerfile.databricks_13
+# docker run --env-file .env --rm -it -v "/$(pwd)/dbt:/app" dbt_databricks_13 dbt debug
+# docker run --env-file .env --rm -it -v "/$(pwd)/dbt:/app" dbt_databricks_13 dbt run

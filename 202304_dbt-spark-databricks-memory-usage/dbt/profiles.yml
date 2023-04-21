@@ -1,0 +1,25 @@
+spark:
+  target: dev
+  outputs:
+    dev:
+      type: spark
+      method: odbc
+      driver: Simba
+      schema: '{{ env_var("DBT_SCHEMA") }}'
+      host: '{{ env_var("DBT_HOST") }}'
+      token: '{{ env_var("DBT_TOKEN") }}'
+      endpoint: '{{ env_var("DBT_ENDPOINT") }}'
+      port: 443
+
+databricks:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      schema: '{{ env_var("DBT_SCHEMA") }}'
+      host: '{{ env_var("DBT_HOST") }}'
+      token: '{{ env_var("DBT_TOKEN") }}'
+      http_path: '/sql/1.0/endpoints/{{ env_var("DBT_ENDPOINT") }}'
+
+config:
+  partial_parse: false

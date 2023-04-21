@@ -1,0 +1,9 @@
+name: "my_dbt_project"
+version: "1.0.0"
+config-version: 2
+profile: "{{ env_var('DBT_TARGET_NAME') }}"
+
+models:
+  my_dbt_project:
+    +materialized: table
+    +file_format: delta
